@@ -1,0 +1,13 @@
+<!--Embed the header.html template at this location-->
+{{ template "header.html" .}}
+
+  <img src="/golang-image.jpeg">
+
+  <h1>Welcome!</h1>
+
+  <h3>{{ .randomize_text }}</h3>
+
+  <p>Repository <a href="https://github.com/yngtzer/nus_iss_kubernetes">Link</a></p>
+
+<!--Embed the footer.html template at this location-->
+{{ template "footer.html" .}}

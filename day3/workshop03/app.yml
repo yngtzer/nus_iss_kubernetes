@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bggapp-deploy
+  labels:
+    app: bggapp-deploy
+  namespace: bggns
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: bggapp-deploy-po
+  template:
+    metadata:
+      labels:
+        app: bggapp-deploy-po
+    spec:
+      containers:
+      - name: bggapp-deploy-po
+        image: stackupiss/bgg-backend:v1
+        args:
+        - --prefix
+        - /v1
+        ports:
+        - containerPort: 3000
+        envFrom:
+        - configMapRef:
+            name: bggapp-cm
+        - secretRef:
+            name: bggapp-secret

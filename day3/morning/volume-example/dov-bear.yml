@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment 
+metadata:
+  name: dov-bear-deploy
+  labels:
+    name: dov-bear-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: dov-bear-po
+  template:
+    metadata:
+      name: dov-bear-po
+      labels:
+        name: dov-bear-po
+        dept: eng
+    spec:
+      containers:
+      - name: dov-bear-container  
+        image: chukmunnlee/dov-bear:v2
+        imagePullPolicy: IfNotPresent
+        envFrom:
+        - secretRef:
+            name: dov-bear-secret
+        ports:
+        - containerPort: 3000
+        volumeMounts:
+        - name: my-pvc-vol
+          mountPath: /pvc
+        - name: my-cm-vol
+          mountPath: /cm
+      volumes:
+        - name: my-pvc-vol
+          persistentVolumeClaim:
+            claimName: my-vol
+        - name: my-cm-vol
+          configMap:
+            name: my-cm

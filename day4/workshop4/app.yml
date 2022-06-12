@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wordpress-deployment
+  labels:
+    app: wordpress-deployment
+  namespace: wordpress
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: wordpress-deployment-pod
+  template:
+    metadata:
+      labels:
+        app: wordpress-deployment-pod
+    spec:
+      containers:
+      - name: wordpress-deployment-pod
+        image: wordpress:php8.1-fpm-alpine
+        ports:
+        - containerPort: 80
+        envFrom:
+        - configMapRef:
+            name: wordpressapp-cm
+        - secretRef:
+            name: wordpressdb-secret
+        volumeMounts:
+        - name: wordpress-vol
+          mountPath: /var/www/html
+      volumes:
+      - name: wordpress-vol
+        persistentVolumeClaim:
+          claimName: wordpress-pvc
+
